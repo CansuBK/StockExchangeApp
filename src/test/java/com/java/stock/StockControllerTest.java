@@ -23,7 +23,7 @@ public class StockControllerTest {
     private StockController stockController;
 
     @Test
-    public void test_update_stock()  {
+    public void test_updateStock()  {
         Long id = 2L;
         BigDecimal price = new BigDecimal(200);
 
