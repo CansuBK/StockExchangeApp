@@ -16,9 +16,9 @@ public class StockExchangeController {
 
     private final StockExchangeService stockExchangeService;
 
-    @GetMapping("/{name}")
-    public ResponseEntity<List<StockOutput>> getStocksByStockExchangeName(@PathVariable String name) {
-        final List<StockOutput> stockOutputs = stockExchangeService.getStocksByStockExchangeName(name);
+    @GetMapping("/{stockExchangeName}")
+    public ResponseEntity<List<StockOutput>> getStocksByStockExchangeName(@PathVariable String stockExchangeName) {
+        final List<StockOutput> stockOutputs = stockExchangeService.getStocksByStockExchangeName(stockExchangeName);
         return new ResponseEntity<>(stockOutputs, HttpStatus.OK);
     }
 

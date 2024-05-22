@@ -38,7 +38,7 @@ public class StockExchange {
     @ManyToMany(cascade = {
             CascadeType.PERSIST,
             CascadeType.MERGE
-    })
+    }, fetch = FetchType.EAGER)
     @JoinTable(
             name = "stock_exchange_stock",
             joinColumns = @JoinColumn(name = "stock_exchange_id"),

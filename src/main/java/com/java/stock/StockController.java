@@ -23,7 +23,7 @@ public class StockController {
     }
 
     @DeleteMapping(path = "{id}")
-    public ResponseEntity<HttpStatus> delete(@PathVariable ("id") Long id) {
+    public ResponseEntity<HttpStatus> delete(@PathVariable("id") Long id) {
         stockService.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 

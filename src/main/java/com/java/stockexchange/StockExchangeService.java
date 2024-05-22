@@ -1,6 +1,7 @@
 package com.java.stockexchange;
 
 import com.java.exception.StockExchangeNotFoundException;
+import com.java.exception.StockNotFoundException;
 import com.java.stock.Stock;
 import com.java.stock.StockMapper;
 import com.java.stock.StockOutput;
@@ -21,16 +22,15 @@ public class StockExchangeService {
 
     private final static Integer MIN_STOCK_SIZE = 5;
 
-    public List<StockOutput> getStocksByStockExchangeName(String name) {
+    public List<StockOutput> getStocksByStockExchangeName(String stockExchangeName) {
 
-        final Optional<StockExchange> stockExchangeOptional = stockExchangeRepository.findByName(name);
+        final Optional<StockExchange> stockExchangeOptional = stockExchangeRepository.findByName(stockExchangeName);
         if (!stockExchangeOptional.isPresent()) {
             throw new StockExchangeNotFoundException(
-                    "Stock Exchange with name " + name + " does not found");
+                    "Stock Exchange with name " + stockExchangeName + " does not found");
         }
 
         final StockExchange stockExchange = stockExchangeOptional.get();
-
         final List<StockOutput> stockOutput = StockMapper.INSTANCE.convertToStockExchangeOutput(stockExchange.getStocks());
 
         return stockOutput;
@@ -64,6 +64,14 @@ public class StockExchangeService {
         }
 
         final StockExchange stockExchange = stockExchangeOptional.get();
+
+        Optional<Stock> stockOptional = stockExchange.getStocks().stream().filter(stock -> stock.getId().equals(stockId)).findAny();
+
+        if (!stockOptional.isPresent()) {
+            throw new StockNotFoundException(
+                    "Stock with id " + stockId + " does not found");
+        }
+
         stockExchange.getStocks().removeIf(stock -> stock.getId().equals(stockId));
         final Boolean stockStatus = checkStockSizeInExchange(stockExchange);
         stockExchange.setLiveInMarket(stockStatus);

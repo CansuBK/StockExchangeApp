@@ -29,7 +29,7 @@ public class StockService {
 
     public void updatePrice(Long id, BigDecimal price) {
 
-        final Boolean isStockExist = isStockExist(id);
+        final Boolean isStockExist = checkStockExist(id);
 
         if (!isStockExist) {
             throw new StockNotFoundException(
@@ -42,7 +42,7 @@ public class StockService {
 
     public void delete(Long id) {
 
-        final Boolean isStockExist = isStockExist(id);
+        final Boolean isStockExist = checkStockExist(id);
 
         if (!isStockExist) {
             throw new StockNotFoundException(
@@ -66,7 +66,7 @@ public class StockService {
 
     }
 
-    private Boolean isStockExist(Long id) {
+    private Boolean checkStockExist(Long id) {
 
         final Optional<Stock> stock = stockRepository.findById(id);
 
