@@ -23,7 +23,7 @@ public class StockControllerTest {
     private StockController stockController;
 
     @Test
-    public void test_updateStock()  {
+    public void testUpdateStock()  {
         Long id = 2L;
         BigDecimal price = new BigDecimal(200);
 
@@ -34,7 +34,7 @@ public class StockControllerTest {
     }
 
     @Test
-    void test_delete() {
+    void testDelete() {
 
         Long id = 1L;
         ResponseEntity<HttpStatus> responseEntity = stockController.delete(id);
@@ -43,7 +43,7 @@ public class StockControllerTest {
     }
 
     @Test
-    void test_save() {
+    void testSave() {
         Stock stock = new Stock();
         ResponseEntity<HttpStatus> responseEntity = stockController.save(stock);
         assertEquals(HttpStatus.NO_CONTENT, responseEntity.getStatusCode());
