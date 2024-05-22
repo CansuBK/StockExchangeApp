@@ -18,7 +18,7 @@ public class StockController {
     @PutMapping
     public ResponseEntity<HttpStatus> updatePrice(@RequestParam Long id, @RequestParam BigDecimal price) {
         stockService.updatePrice(id, price);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(HttpStatus.OK);
 
     }
 
@@ -32,7 +32,7 @@ public class StockController {
     @PostMapping
     public ResponseEntity<HttpStatus> save(@RequestBody Stock stock) {
         stockService.save(stock);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
 }

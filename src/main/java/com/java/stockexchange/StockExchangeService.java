@@ -2,11 +2,13 @@ package com.java.stockexchange;
 
 import com.java.exception.StockExchangeNotFoundException;
 import com.java.stock.Stock;
-import com.java.stock.StockRepository;
+import com.java.stock.StockMapper;
+import com.java.stock.StockOutput;
+import com.java.stock.StockService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -15,52 +17,57 @@ public class StockExchangeService {
 
     private final StockExchangeRepository stockExchangeRepository;
 
-    private final StockRepository stockRepository;
+    private final StockService stockService;
 
     private final static Integer MIN_STOCK_SIZE = 5;
 
-    public StockExchange getStockExchangeByName(String name) {
+    public List<StockOutput> getStocksByStockExchangeName(String name) {
 
-       final Optional<StockExchange> stockExchange = stockExchangeRepository.findByName(name);
-
-       if(!stockExchange.isPresent()) {
-           throw new StockExchangeNotFoundException(
-                   "Stock Exchange with name " + name + " does not found");
-       }
-
-        return stockExchange.get();
-    }
-
-        public void addStockToStockExchange(String stockExchangeName, Stock stock) {
-            final Optional<StockExchange> stockExchangeOptional = stockExchangeRepository.findByName(stockExchangeName);
-            if (!stockExchangeOptional.isPresent()) {
-                throw new StockExchangeNotFoundException(
-                        "Stock Exchange with name " + stockExchangeName + " does not found");
-            }
-
-            final Optional<Stock> stockOptional = stockRepository.findById(stock.getId());
-            if (stockOptional.isPresent()) {
-                stock = stockOptional.get();
-            }
-
-            stockExchangeOptional.get().getStocks().add(stock);
-            final Boolean stockStatus = checkStockSizeInExchange(stockExchangeOptional.get());
-            stockExchangeOptional.get().setLiveInMarket(stockStatus);
-            stockExchangeRepository.save(stockExchangeOptional.get());
+        final Optional<StockExchange> stockExchangeOptional = stockExchangeRepository.findByName(name);
+        if (!stockExchangeOptional.isPresent()) {
+            throw new StockExchangeNotFoundException(
+                    "Stock Exchange with name " + name + " does not found");
         }
 
-    public void deleteStockFromStockExchange(String stockExchangeName, Long stockId) {
-        final Optional<StockExchange> stockExchangeOptional = stockExchangeRepository.findByName(stockExchangeName);
+        final StockExchange stockExchange = stockExchangeOptional.get();
 
-        if(!stockExchangeOptional.isPresent()) {
+        final List<StockOutput> stockOutput = StockMapper.INSTANCE.convertToStockExchangeOutput(stockExchange.getStocks());
+
+        return stockOutput;
+    }
+
+    public void addStockToStockExchange(String stockExchangeName, Stock stock) {
+
+        final Optional<StockExchange> stockExchangeOptional = stockExchangeRepository.findByName(stockExchangeName);
+        if (!stockExchangeOptional.isPresent()) {
             throw new StockExchangeNotFoundException(
                     "Stock Exchange with name " + stockExchangeName + " does not found");
         }
 
-        stockExchangeOptional.get().getStocks().removeIf(stock -> stock.getId().equals(stockId));
-        final Boolean stockStatus = checkStockSizeInExchange(stockExchangeOptional.get());
-        stockExchangeOptional.get().setLiveInMarket(stockStatus);
-        stockExchangeRepository.save(stockExchangeOptional.get());
+        final StockExchange stockExchange = stockExchangeOptional.get();
+
+        final Stock existingStock = stockService.getById(stock.getId());
+        stock = existingStock;
+
+        stockExchange.getStocks().add(stock);
+        final Boolean stockStatus = checkStockSizeInExchange(stockExchange);
+        stockExchange.setLiveInMarket(stockStatus);
+        stockExchangeRepository.save(stockExchange);
+    }
+
+    public void deleteStockFromStockExchange(String stockExchangeName, Long stockId) {
+
+        final Optional<StockExchange> stockExchangeOptional = stockExchangeRepository.findByName(stockExchangeName);
+        if (!stockExchangeOptional.isPresent()) {
+            throw new StockExchangeNotFoundException(
+                    "Stock Exchange with name " + stockExchangeName + " does not found");
+        }
+
+        final StockExchange stockExchange = stockExchangeOptional.get();
+        stockExchange.getStocks().removeIf(stock -> stock.getId().equals(stockId));
+        final Boolean stockStatus = checkStockSizeInExchange(stockExchange);
+        stockExchange.setLiveInMarket(stockStatus);
+        stockExchangeRepository.save(stockExchange);
     }
 
     private Boolean checkStockSizeInExchange(StockExchange stockExchange) {

@@ -1,10 +1,13 @@
 package com.java.stockexchange;
 
 import com.java.stock.Stock;
+import com.java.stock.StockOutput;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/stock-exchanges")
@@ -14,15 +17,15 @@ public class StockExchangeController {
     private final StockExchangeService stockExchangeService;
 
     @GetMapping("/{name}")
-    public ResponseEntity<StockExchange> getByName(@PathVariable String name) {
-        final StockExchange stockExchange = stockExchangeService.getStockExchangeByName(name);
-        return new ResponseEntity<>(stockExchange, HttpStatus.OK);
+    public ResponseEntity<List<StockOutput>> getStocksByStockExchangeName(@PathVariable String name) {
+        final List<StockOutput> stockOutputs = stockExchangeService.getStocksByStockExchangeName(name);
+        return new ResponseEntity<>(stockOutputs, HttpStatus.OK);
     }
 
     @PostMapping("/{stockExchangeName}")
     public ResponseEntity<HttpStatus> addStockToStockExchange(@PathVariable String stockExchangeName, @RequestBody Stock stock) {
         stockExchangeService.addStockToStockExchange(stockExchangeName, stock);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{stockExchangeName}")

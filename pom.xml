@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.java</groupId>
 	<artifactId>stockexchange</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<name>demo</name>
 	<description>Stock Exchange project for Spring Boot</description>
 	<properties>
@@ -37,10 +37,17 @@
 			<artifactId>lombok</artifactId>
 			<optional>true</optional>
 		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.mapstruct</groupId>
+			<artifactId>mapstruct</artifactId>
+			<version>1.4.2.Final</version>
 		</dependency>
 	</dependencies>
 

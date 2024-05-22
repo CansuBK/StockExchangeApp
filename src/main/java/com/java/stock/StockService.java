@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -15,11 +14,24 @@ public class StockService {
 
     private final StockRepository stockRepository;
 
-     public void updatePrice(Long id, BigDecimal price) {
+    public Stock getById(Long id) {
+
+        final Optional<Stock> stockOptional = stockRepository.findById(id);
+
+        if (!stockOptional.isPresent()) {
+            throw new StockNotFoundException(
+                    "Stock with id " + id + " does not found");
+        }
+
+        return stockOptional.get();
+
+    }
+
+    public void updatePrice(Long id, BigDecimal price) {
 
         final Boolean isStockExist = isStockExist(id);
 
-        if(!isStockExist) {
+        if (!isStockExist) {
             throw new StockNotFoundException(
                     "Stock with id " + id + " does not found");
         }
@@ -32,7 +44,7 @@ public class StockService {
 
         final Boolean isStockExist = isStockExist(id);
 
-        if(!isStockExist) {
+        if (!isStockExist) {
             throw new StockNotFoundException(
                     "Stock with id " + id + " does not found");
         }
@@ -43,9 +55,9 @@ public class StockService {
 
     public void save(Stock stock) {
 
-       final Optional<Stock> stockOptional = stockRepository.findByName(stock.getName());
+        final Optional<Stock> stockOptional = stockRepository.findByName(stock.getName());
 
-        if(stockOptional.isPresent()) {
+        if (stockOptional.isPresent()) {
             throw new BadRequestException(
                     "Name " + stock.getName() + " already exists");
         }

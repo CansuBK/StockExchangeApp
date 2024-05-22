@@ -2,15 +2,18 @@ package com.java.stockexchange;
 
 import com.java.stock.Stock;
 import jakarta.persistence.*;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
 @Table(name="stock-exchange")
 @Getter
 @Setter
+@EqualsAndHashCode
 public class StockExchange {
 
     @Id
@@ -25,6 +28,12 @@ public class StockExchange {
 
     @Column(name = "liveInMarket")
     private Boolean liveInMarket;
+
+    @Column(name = "updateTime")
+    private LocalDate updateTime;
+
+    @Column(name = "updateUser")
+    private String updateUser;
 
     @ManyToMany(cascade = {
             CascadeType.PERSIST,

@@ -2,6 +2,7 @@ package com.java.stock;
 
 import com.java.stockexchange.StockExchange;
 import jakarta.persistence.*;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,6 +14,7 @@ import java.util.List;
 @Table(name="stock")
 @Getter
 @Setter
+@EqualsAndHashCode
 public class Stock {
 
     @Id
@@ -30,6 +32,12 @@ public class Stock {
 
     @Column(name = "lastUpdate")
     private LocalDate lastUpdate;
+
+    @Column(name = "updateTime")
+    private LocalDate updateTime;
+
+    @Column(name = "updateUser")
+    private String updateUser;
 
     @ManyToMany(mappedBy = "stocks")
     private List<StockExchange> stockExchanges;
